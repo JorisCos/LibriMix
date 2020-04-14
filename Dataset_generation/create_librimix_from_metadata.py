@@ -8,6 +8,8 @@ from tqdm import tqdm
 
 # eps secures log and division
 EPS = 1e-10
+# Rate of the sources in LibriSpeech
+RATE = 16000
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--librispeech_dir', type=str, required=True,
@@ -221,7 +223,7 @@ def resample_list(sources_list, freq):
     resampled_list = []
     # Resample each source
     for source in sources_list:
-        resampled_list.append(resample_poly(source, freq, 16000))
+        resampled_list.append(resample_poly(source, freq, RATE))
     return resampled_list
 
 

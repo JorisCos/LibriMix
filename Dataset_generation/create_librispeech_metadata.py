@@ -80,7 +80,8 @@ def create_librispeech_dataframe(librispeech_dir, subdir, speakers_md):
     """ Generate a dataframe that gather infos about the sound files in a
     LibriSpeech subdirectory """
 
-    print(f"Creating {subdir} metadata file in LibriSpeech/metadata")
+    print(f"Creating {subdir} metadata file in "
+          f"{os.path.join(librispeech_dir, 'metadata')}")
     # Get the current directory path
     dir_path = os.path.join(librispeech_dir, subdir)
     # Recursively look for .flac files in current directory

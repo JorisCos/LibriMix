@@ -246,7 +246,7 @@ def check_for_cliping(mixture_max, sources_list_norm):
     renormalize_loudness = []
     clip = False
     # Recreate the meter
-    meter = pyln.Meter(16000)
+    meter = pyln.Meter(RATE)
     # Check for clipping in mixtures
     if np.max(np.abs(mixture_max)) > MAX_AMP:
         clip = True
