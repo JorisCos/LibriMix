@@ -28,8 +28,8 @@ parser.add_argument('--freqs', nargs='+', default=['8k', '16k'],
 parser.add_argument('--modes', nargs='+', default=['min', 'max'],
                     help='--modes min max will create 2 directories in '
                          'each freq directory')
-parser.add_argument('--types', nargs='+', default=['mix-clean', 'mix-both'],
-                    help='--types mix-clean mix-both')
+parser.add_argument('--types', nargs='+', default=['mix_clean', 'mix_both'],
+                    help='--types mix_clean mix_both')
 
 
 
@@ -62,8 +62,9 @@ def create_librimix(librispeech_dir, wham_dir, out_dir, metadata_dir,
                     freqs, n_src, modes, types):
     """ Generate sources mixtures and saves them in out_dir"""
     # Get metadata files
-    md_filename_list = [file for file in os.listdir(metadata_dir)
-                        if 'info' not in file]
+    # md_filename_list = [file for file in os.listdir(metadata_dir)
+    #                     if 'info' not in file]
+    md_filename_list=['libri2mix_dev-clean.csv']
     # Create all parts of librimix
     for md_filename in md_filename_list:
         csv_path = os.path.join(metadata_dir, md_filename)
@@ -101,7 +102,7 @@ def process_metadata_file(csv_path, freqs, n_src, librispeech_dir, wham_dir,
             print(f"Creating mixtures and sources from {csv_path} "
                   f"in {dir_path}")
             # Create subdir
-            if types == ['mix-clean']:
+            if types == ['mix_clean']:
                 subdirs = [f's{i + 1}' for i in range(n_src)] + ['mix_clean']
             else:
                 subdirs = [f's{i + 1}' for i in range(n_src)] + types + ['noise']

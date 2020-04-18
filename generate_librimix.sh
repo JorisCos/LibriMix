@@ -37,12 +37,15 @@ rm -rf $storage_dir/wham_noise.zip
 librispeech_dir=$storage_dir/LibriSpeech
 wham_dir=$storage_dir/wham_noise
 metadata_dir=metadata/LibriMix
+librimix_outdir=$storage_dir/LibriMix
+
 
 python scripts/augment_train_noise.py --wham_dir $wham_dir
 python scripts/create_librimix_from_metadata.py --librispeech_dir $librispeech_dir \
 --wham_dir $wham_dir \
 --metadata_dir $metadata_dir \
+--librimix_outdir $librimix_outdir \
 --n_src $n_src \
 --freqs 8k 16k \
 --modes min max \
---types mix-clean mix-both
+--types mix_clean mix_both
