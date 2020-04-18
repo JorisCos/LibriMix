@@ -62,9 +62,8 @@ def create_librimix(librispeech_dir, wham_dir, out_dir, metadata_dir,
                     freqs, n_src, modes, types):
     """ Generate sources mixtures and saves them in out_dir"""
     # Get metadata files
-    # md_filename_list = [file for file in os.listdir(metadata_dir)
-    #                     if 'info' not in file]
-    md_filename_list=['libri2mix_dev-clean.csv']
+    md_filename_list = [file for file in os.listdir(metadata_dir)
+                        if 'info' not in file]
     # Create all parts of librimix
     for md_filename in md_filename_list:
         csv_path = os.path.join(metadata_dir, md_filename)
