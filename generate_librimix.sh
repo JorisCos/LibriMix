@@ -38,6 +38,7 @@ librispeech_dir=$storage_dir/LibriSpeech
 wham_dir=$storage_dir/wham_noise
 metadata_dir="metadata/libri$n_src"mix_metadata
 
+python /scripts/augment_train_noise.py --wham_dir $wham_dir
 python /scripts/create_librimix_from_metadata.py --librispeech_dir $librispeech_dir\
 --wham_dir $wham_dir\
 --metadata_dir $metadata_dir\

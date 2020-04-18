@@ -4,19 +4,18 @@ import soundfile as sf
 import pandas as pd
 import glob
 from tqdm import tqdm
-cd
 # Global parameter
 NUMBER_OF_SECONDS = 3
 RATE = 16000
 
 # Command line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--wham_noise_dir', type=str, required=True,
+parser.add_argument('--wham_dir', type=str, required=True,
                     help='Path to wham_noise root directory')
 
 
 def main(args):
-    wham_noise_dir = args.wham_noise_dir
+    wham_noise_dir = args.wham_dir
     # wham_noise metadata directory
     wham_noise_md_dir = os.path.join(wham_noise_dir, 'metadata')
     os.makedirs(wham_noise_md_dir, exist_ok=True)
@@ -36,11 +35,11 @@ def create_wham_noise_metadata(wham_noise_dir, md_dir):
         dir_metadata = dir_metadata.sort_values('length')
         # Write the dataframe in a .csv in the metadata directory
         if ldir == 'tt':
-            name = 'train'
+            name = 'test'
         elif ldir == 'cv':
             name = 'dev'
         else:
-            name = 'test'
+            name = 'train'
         # Filter out files that are shorter than 3s
         num_samples = NUMBER_OF_SECONDS * RATE
         dir_metadata = dir_metadata[
@@ -78,7 +77,7 @@ def create_wham_noise_dataframe(wham_noise_dir, subdir):
     sound_paths = glob.glob(os.path.join(dir_path, '**/*.wav'),
                             recursive=True)
     # Create the dataframe corresponding to this directory
-    dir_md = pd.DataFrame(columns=['noise_ID', 'subset', 'length',
+    dir_md = pd.DataFrame(columns=['noise_ID', 'subset', 'length', 'augmented',
                                    'origin_path'])
 
     # Go through the sound file list
@@ -87,10 +86,13 @@ def create_wham_noise_dataframe(wham_noise_dir, subdir):
         noise_id = os.path.split(sound_path)[1]
         # Get its length
         length = len(sf.SoundFile(sound_path))
+        augment = False
+        if 'sp08' in sound_path or 'sp12' in sound_path:
+            augment = True
         # Get the sound file relative path
         rel_path = os.path.relpath(sound_path, wham_noise_dir)
         # Add information to the dataframe
-        dir_md.loc[len(dir_md)] = [noise_id, subdir, length, rel_path]
+        dir_md.loc[len(dir_md)] = [noise_id, subdir, length, augment, rel_path]
     return dir_md
 
 

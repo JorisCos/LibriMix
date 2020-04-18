@@ -69,7 +69,7 @@ def create_librimix(librispeech_dir, wham_dir, out_dir, metadata_dir,
 def process_metadata_file(csv_path, freqs, n_src, librispeech_dir, wham_dir,
                           out_dir, modes):
     """ Process a metadata generation file to create sources and mixtures"""
-    md_file = pd.read_csv(csv_path)
+    md_file = pd.read_csv(csv_path,engine='python')
     for freq in freqs:
         # Get the frequency directory path
         freq_path = os.path.join(out_dir, 'wav' + freq)
@@ -223,7 +223,8 @@ def read_sources(row, n_src, librispeech_dir, wham_dir):
     # Read the noise
     noise_path = os.path.join(wham_dir, row['noise_path'])
     noise, _ = sf.read(noise_path, dtype='float32')
-    noise = noise[:, 0]
+    if len(noise.shape) > 1:
+        noise = noise[:, 0]
     sources_list.append(noise)
     gain_list.append(row['noise_gain'])
 

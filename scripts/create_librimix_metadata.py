@@ -26,7 +26,6 @@ MAX_LOUDNESS = -25
 # A random seed is used for reproducibility
 random.seed(123)
 
-
 # Command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('--librispeech_dir', type=str, required=True,
@@ -221,14 +220,14 @@ def set_pairs(metadata_file, n_src):
 
 
 def set_pairs_noise(pairs, wham_md_file):
-    # Index of noise files
-    index_noises = list(range(len(wham_md_file)))
-    # If there are more mixtures than noise than reuse noises
-    if len(pairs) > len(index_noises):
-        index_noises = index_noises * int(
-            ceil(len(pairs) / len(index_noises)))
+    # Initially take not augmented data
+    md = wham_md_file[wham_md_file['augmented'] == 'False']
+    # If there are more mixtures than noise than use augmented data
+    if len(pairs) > len(md):
+        md = wham_md_file
     # Associate a noise to a mixture
-    pairs_noise = random.sample(index_noises, len(pairs))
+    pairs_noise = random.sample(list(md.index), len(pairs))
+
     return pairs_noise
 
 
@@ -270,7 +269,8 @@ def add_noise(wham_md_file, wham_dir, pair_noise, sources_list, sources_info):
     # Read the noise
     n, _ = sf.read(noise_path, dtype='float32')
     # Keep the first channel
-    n = n[:, 0]
+    if len(n.shape) > 1:
+        n = n[:, 0]
     # Get expected length
     length = len(sources_list[0])
     # Pad if shorter
@@ -301,8 +301,9 @@ def set_loudness(sources_list):
         # Pick a random loudness
         target_loudness = random.uniform(MIN_LOUDNESS, MAX_LOUDNESS)
         # Noise has a different loudness
-        if i == len(sources_list)-1:
-            target_loudness = random.uniform(MIN_LOUDNESS-5, MAX_LOUDNESS-5)
+        if i == len(sources_list) - 1:
+            target_loudness = random.uniform(MIN_LOUDNESS - 5,
+                                             MAX_LOUDNESS - 5)
         # Normalize source to target loudness
 
         with warnings.catch_warnings():
