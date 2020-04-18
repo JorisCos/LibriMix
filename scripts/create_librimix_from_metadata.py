@@ -28,6 +28,9 @@ parser.add_argument('--freqs', nargs='+', default=['8k', '16k'],
 parser.add_argument('--modes', nargs='+', default=['min', 'max'],
                     help='--modes min max will create 2 directories in '
                          'each freq directory')
+parser.add_argument('--types', nargs='+', default=['mix-clean', 'mix-both'],
+                    help='--types mix-clean mix-both')
+
 
 
 def main(args):
@@ -48,13 +51,15 @@ def main(args):
     # Get the desired modes
     modes = args.modes
     modes = [mode.lower() for mode in modes]
+    types = args.types
+    types = [t.lower() for t in types]
     # Get the number of sources
     create_librimix(librispeech_dir, wham_dir, librimix_outdir, metadata_dir,
-                    freqs, n_src, modes)
+                    freqs, n_src, modes, types)
 
 
 def create_librimix(librispeech_dir, wham_dir, out_dir, metadata_dir,
-                    freqs, n_src, modes):
+                    freqs, n_src, modes, types):
     """ Generate sources mixtures and saves them in out_dir"""
     # Get metadata files
     md_filename_list = [file for file in os.listdir(metadata_dir)
@@ -63,11 +68,11 @@ def create_librimix(librispeech_dir, wham_dir, out_dir, metadata_dir,
     for md_filename in md_filename_list:
         csv_path = os.path.join(metadata_dir, md_filename)
         process_metadata_file(csv_path, freqs, n_src, librispeech_dir,
-                              wham_dir, out_dir, modes)
+                              wham_dir, out_dir, modes, types)
 
 
 def process_metadata_file(csv_path, freqs, n_src, librispeech_dir, wham_dir,
-                          out_dir, modes):
+                          out_dir, modes, types):
     """ Process a metadata generation file to create sources and mixtures"""
     md_file = pd.read_csv(csv_path,engine='python')
     for freq in freqs:
@@ -96,10 +101,10 @@ def process_metadata_file(csv_path, freqs, n_src, librispeech_dir, wham_dir,
             print(f"Creating mixtures and sources from {csv_path} "
                   f"in {dir_path}")
             # Create subdir
-            subdirs = [f's{i + 1}' for i in range(n_src)] + ['mix_clean',
-                                                             'mix_both',
-                                                             'mix_single',
-                                                             'noise']
+            if types == ['mix-clean']:
+                subdirs = [f's{i + 1}' for i in range(n_src)] + ['mix_clean']
+            else:
+                subdirs = [f's{i + 1}' for i in range(n_src)] + types + ['noise']
             # Create directories accordingly
             for subdir in subdirs:
                 os.makedirs(os.path.join(dir_path, subdir))
