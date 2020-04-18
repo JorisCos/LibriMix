@@ -280,7 +280,7 @@ def add_noise(wham_md_file, wham_dir, pair_noise, sources_list, sources_info):
     else:
         sources_list.append(n[:length])
     # Get relative path
-    sources_info['noise_path'] = noise_path
+    sources_info['noise_path'] = noise['origin_path']
     return sources_info, sources_list
 
 
