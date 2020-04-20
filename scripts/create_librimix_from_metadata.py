@@ -33,7 +33,6 @@ parser.add_argument('--types', nargs='+', default=['mix_clean', 'mix_both',
                     help='--types mix_clean mix_both mix_single ')
 
 
-
 def main(args):
     # Get librispeech root path
     librispeech_dir = args.librispeech_dir
