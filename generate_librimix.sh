@@ -42,10 +42,10 @@ librimix_outdir=$storage_dir/LibriMix
 
 python scripts/augment_train_noise.py --wham_dir $wham_dir
 python scripts/create_librimix_from_metadata.py --librispeech_dir $librispeech_dir \
---wham_dir $wham_dir \
---metadata_dir $metadata_dir \
---librimix_outdir $librimix_outdir \
---n_src $n_src \
---freqs 8k 16k \
---modes min max \
---types mix_clean mix_both
+  --wham_dir $wham_dir \
+  --metadata_dir $metadata_dir \
+  --librimix_outdir $librimix_outdir \
+  --n_src $n_src \
+  --freqs 8k 16k \
+  --modes min max \
+  --types mix_clean mix_both mix_single

@@ -28,8 +28,9 @@ parser.add_argument('--freqs', nargs='+', default=['8k', '16k'],
 parser.add_argument('--modes', nargs='+', default=['min', 'max'],
                     help='--modes min max will create 2 directories in '
                          'each freq directory')
-parser.add_argument('--types', nargs='+', default=['mix_clean', 'mix_both'],
-                    help='--types mix_clean mix_both')
+parser.add_argument('--types', nargs='+', default=['mix_clean', 'mix_both',
+                                                   'mix_single'],
+                    help='--types mix_clean mix_both mix_single ')
 
 
 
