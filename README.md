@@ -29,7 +29,7 @@ your choice)
 
 
 ```
-git clone https://github.com/JorisCos/LibriMix.git storage_dir
+git clone https://github.com/JorisCos/LibriMix.git storage_dir/LibriMix
 cd storage_dir/LibriMix 
 ./generate_librimix.sh storage_dir n_src
 ```
