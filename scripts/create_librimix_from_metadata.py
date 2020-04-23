@@ -298,7 +298,8 @@ def write_sources(mix_id, transformed_sources, subdirs, dir_path, freq, n_src):
     abs_source_path_list = []
     ex_filename = mix_id + '.wav'
     for src, src_dir in zip(transformed_sources[:n_src], subdirs[:n_src]):
-        abs_save_path = os.path.join(dir_path, src_dir, ex_filename)
+        save_path = os.path.join(dir_path, src_dir, ex_filename)
+        abs_save_path = os.path.abspath(save_path)
         sf.write(abs_save_path, src, freq)
         abs_source_path_list.append(abs_save_path)
     return abs_source_path_list
@@ -308,7 +309,8 @@ def write_noise(mix_id, transformed_sources, dir_path, freq):
     # Write noise save it's path
     noise = transformed_sources[-1]
     ex_filename = mix_id + '.wav'
-    abs_save_path = os.path.join(dir_path, 'noise', ex_filename)
+    save_path = os.path.join(dir_path, 'noise', ex_filename)
+    abs_save_path = os.path.abspath(save_path)
     sf.write(abs_save_path, noise, freq)
     return abs_save_path
 
@@ -325,7 +327,8 @@ def mix(sources_list):
 def write_mix(mix_id, mixture, dir_path, subdir, freq):
     # Write noise save it's path
     ex_filename = mix_id + '.wav'
-    abs_save_path = os.path.join(dir_path, subdir, ex_filename)
+    save_path = os.path.join(dir_path, subdir, ex_filename)
+    abs_save_path = os.path.abspath(save_path)
     sf.write(abs_save_path, mixture, freq)
     return abs_save_path
 

@@ -221,7 +221,7 @@ def set_pairs(metadata_file, n_src):
 
 def set_pairs_noise(pairs, wham_md_file):
     # Initially take not augmented data
-    md = wham_md_file[wham_md_file['augmented'] == 'False']
+    md = wham_md_file[wham_md_file['augmented'] == False]
     # If there are more mixtures than noise than use augmented data
     if len(pairs) > len(md):
         md = wham_md_file
@@ -263,7 +263,7 @@ def read_sources(metadata_file, pair, n_src, librispeech_dir):
 
 def add_noise(wham_md_file, wham_dir, pair_noise, sources_list, sources_info):
     # Get the row corresponding to the index
-    noise = wham_md_file.iloc[pair_noise]
+    noise = wham_md_file.loc[pair_noise]
     # Get the noise path
     noise_path = os.path.join(wham_dir, noise['origin_path'])
     # Read the noise
