@@ -18,7 +18,10 @@ the script or use the command line.
 By default, LibriMix will be generated at both 16Khz and 8kHz, for
 min max modes, and all mixture types will be saved (mix_clean, 
 mix_both and mix_single). This represents around **430GB** 
-of data for Libri2Mix. Please refer to 
+of data for Libri2Mix and **332GB** for Libri3Mix. 
+You will also need to store LibriSpeech and wham_noise_augmented during
+generation for an additional **30GB** and **50GB**.
+Please refer to 
 [this section](#Features) if you want to generate less data.
 
 
