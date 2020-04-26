@@ -36,7 +36,7 @@ rm -rf $storage_dir/wham_noise.zip
 
 librispeech_dir=$storage_dir/LibriSpeech
 wham_dir=$storage_dir/wham_noise
-metadata_dir=metadata/LibriMix
+metadata_dir=metadata/Libri$n_src"Mix"
 librimix_outdir=$storage_dir/
 
 
