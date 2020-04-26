@@ -289,7 +289,7 @@ def fit_lengths(source_list, mode):
         target_length = max([len(source) for source in source_list])
         for source in source_list:
             sources_list_reshaped.append(
-                np.pad(source, (0, target_length - len(source))))
+                np.pad(source, (0, target_length - len(source)), mode='constant'))
     return sources_list_reshaped
 
 

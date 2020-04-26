@@ -253,7 +253,7 @@ def read_sources(metadata_file, pair, n_src, librispeech_dir):
         absolute_path = os.path.join(librispeech_dir,
                                      source['origin_path'])
         s, _ = sf.read(absolute_path, dtype='float32')
-        sources_list.append(np.pad(s, (0, max_length - len(s))))
+        sources_list.append(np.pad(s, (0, max_length - len(s)),mode='constant'))
 
     sources_info = {'mixtures_id': mixtures_id,
                     'speaker_id_list': speaker_id_list, 'sex_list': sex_list,
@@ -275,7 +275,7 @@ def add_noise(wham_md_file, wham_dir, pair_noise, sources_list, sources_info):
     length = len(sources_list[0])
     # Pad if shorter
     if length > len(n):
-        sources_list.append(np.pad(n, (0, length - len(n))))
+        sources_list.append(np.pad(n, (0, length - len(n)), mode='constant'))
     # Cut if longer
     else:
         sources_list.append(n[:length])
