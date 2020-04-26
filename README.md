@@ -23,6 +23,7 @@ You will also need to store LibriSpeech and wham_noise_augmented during
 generation for an additional **30GB** and **50GB**.
 Please refer to 
 [this section](#Features) if you want to generate less data.
+You will also find a detailed storage usage description metadata folder.
 
 
 ### Features
