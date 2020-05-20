@@ -74,7 +74,7 @@ def create_librimix(librispeech_dir, wham_dir, out_dir, metadata_dir,
 def process_metadata_file(csv_path, freqs, n_src, librispeech_dir, wham_dir,
                           out_dir, modes, types):
     """ Process a metadata generation file to create sources and mixtures"""
-    md_file = pd.read_csv(csv_path,engine='python')
+    md_file = pd.read_csv(csv_path, engine='python')
     for freq in freqs:
         # Get the frequency directory path
         freq_path = os.path.join(out_dir, 'wav' + freq)
@@ -104,7 +104,8 @@ def process_metadata_file(csv_path, freqs, n_src, librispeech_dir, wham_dir,
             if types == ['mix_clean']:
                 subdirs = [f's{i + 1}' for i in range(n_src)] + ['mix_clean']
             else:
-                subdirs = [f's{i + 1}' for i in range(n_src)] + types + ['noise']
+                subdirs = [f's{i + 1}' for i in range(n_src)] + types + [
+                    'noise']
             # Create directories accordingly
             for subdir in subdirs:
                 os.makedirs(os.path.join(dir_path, subdir))
@@ -217,19 +218,25 @@ def read_sources(row, n_src, librispeech_dir, wham_dir):
     sources_path_list = get_list_from_csv(row, 'source_path', n_src)
     gain_list = get_list_from_csv(row, 'source_gain', n_src)
     sources_list = []
-
+    max_length = 0
     # Read the files to make the mixture
     for sources_path in sources_path_list:
         sources_path = os.path.join(librispeech_dir,
                                     sources_path)
         source, _ = sf.read(sources_path, dtype='float32')
+        # Get max_length
+        if max_length < len(source):
+            max_length = len(source)
         sources_list.append(source)
-
     # Read the noise
     noise_path = os.path.join(wham_dir, row['noise_path'])
-    noise, _ = sf.read(noise_path, dtype='float32')
+    noise, _ = sf.read(noise_path, dtype='float32', stop=max_length)
+    # if noises have 2 channels take the first
     if len(noise.shape) > 1:
         noise = noise[:, 0]
+    # if noise is too short extend it
+    if len(noise) < max_length:
+        noise = extend_noise(noise, max_length)
     sources_list.append(noise)
     gain_list.append(row['noise_gain'])
 
@@ -245,6 +252,26 @@ def get_list_from_csv(row, column, n_src):
         current_column = '_'.join(current_column)
         python_list.append(row[current_column])
     return python_list
+
+
+def extend_noise(noise, max_length):
+    """ Concatenate noise using hanning window"""
+    noise_ex = noise
+    window = np.hanning(RATE + 1)
+    # Increasing window
+    i_w = window[:len(window) // 2 + 1]
+    # Decreasing window
+    d_w = window[len(window) // 2::-1]
+    # Extend until max_length is reached
+    while len(noise_ex) < max_length:
+        noise_ex = np.concatenate((noise_ex[:len(noise_ex) - len(d_w)],
+                                   np.multiply(
+                                       noise_ex[len(noise_ex) - len(d_w):],
+                                       d_w) + np.multiply(
+                                       noise[:len(i_w)], i_w),
+                                   noise[len(i_w):]))
+    noise_ex = noise_ex[:max_length]
+    return noise_ex
 
 
 def transform_sources(sources_list, freq, mode, gain_list):
@@ -289,7 +316,8 @@ def fit_lengths(source_list, mode):
         target_length = max([len(source) for source in source_list])
         for source in source_list:
             sources_list_reshaped.append(
-                np.pad(source, (0, target_length - len(source)), mode='constant'))
+                np.pad(source, (0, target_length - len(source)),
+                       mode='constant'))
     return sources_list_reshaped
 
 

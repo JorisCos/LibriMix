@@ -6,7 +6,9 @@ import glob
 from tqdm import tqdm
 
 # Global parameter
+# We will filter out files shorter than that
 NUMBER_OF_SECONDS = 3
+# In LibriSpeech all the sources are at 16K Hz
 RATE = 16000
 
 # Command line arguments
@@ -17,7 +19,7 @@ parser.add_argument('--librispeech_dir', type=str, required=True,
 
 def main(args):
     librispeech_dir = args.librispeech_dir
-    # Librispeech metadata directory
+    # Create Librispeech metadata directory
     librispeech_md_dir = os.path.join(librispeech_dir, 'metadata')
     os.makedirs(librispeech_md_dir, exist_ok=True)
     create_librispeech_metadata(librispeech_dir, librispeech_md_dir)
