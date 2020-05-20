@@ -5,7 +5,9 @@ import pandas as pd
 import glob
 from tqdm import tqdm
 # Global parameter
+# We will filter out files shorter than that
 NUMBER_OF_SECONDS = 3
+# In WHAM! all the sources are at 16K Hz
 RATE = 16000
 
 # Command line arguments
@@ -16,7 +18,7 @@ parser.add_argument('--wham_dir', type=str, required=True,
 
 def main(args):
     wham_noise_dir = args.wham_dir
-    # wham_noise metadata directory
+    # Create wham_noise metadata directory
     wham_noise_md_dir = os.path.join(wham_noise_dir, 'metadata')
     os.makedirs(wham_noise_md_dir, exist_ok=True)
     create_wham_noise_metadata(wham_noise_dir, wham_noise_md_dir)
@@ -30,7 +32,7 @@ def create_wham_noise_metadata(wham_noise_dir, md_dir):
     # Go through each directory and create associated metadata
     for ldir in not_already_processed_dir:
         # Generate the dataframe relative to the directory
-        dir_metadata = create_wham_noise_dataframe(wham_noise_dir, ldir, )
+        dir_metadata = create_wham_noise_dataframe(wham_noise_dir, ldir)
         # Sort the dataframe according to ascending Length
         dir_metadata = dir_metadata.sort_values('length')
         # Write the dataframe in a .csv in the metadata directory
