@@ -41,7 +41,6 @@ librimix_outdir=$storage_dir/
 python scripts/augment_train_noise.py --wham_dir $wham_dir
 for n_src in 2 3; do
   metadata_dir=metadata/Libri$n_src"Mix"
-  echo $metadata_dir
   python scripts/create_librimix_from_metadata.py --librispeech_dir $librispeech_dir \
     --wham_dir $wham_dir \
     --metadata_dir $metadata_dir \
