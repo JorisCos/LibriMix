@@ -1,0 +1,168 @@
+920M	Libri3Mix/wav16k/max/dev/s2
+920M	Libri3Mix/wav16k/max/dev/mix_single
+920M	Libri3Mix/wav16k/max/dev/mix_clean
+920M	Libri3Mix/wav16k/max/dev/s3
+920M	Libri3Mix/wav16k/max/dev/s1
+920M	Libri3Mix/wav16k/max/dev/mix_both
+920M	Libri3Mix/wav16k/max/dev/noise
+6.3G	Libri3Mix/wav16k/max/dev
+
+16G	Libri3Mix/wav16k/max/train-360/s2
+16G	Libri3Mix/wav16k/max/train-360/mix_single
+16G	Libri3Mix/wav16k/max/train-360/mix_clean
+16G	Libri3Mix/wav16k/max/train-360/s3
+16G	Libri3Mix/wav16k/max/train-360/s1
+16G	Libri3Mix/wav16k/max/train-360/mix_both
+16G	Libri3Mix/wav16k/max/train-360/noise
+108G	Libri3Mix/wav16k/max/train-360
+
+4.3G	Libri3Mix/wav16k/max/train-100/s2
+4.3G	Libri3Mix/wav16k/max/train-100/mix_single
+4.3G	Libri3Mix/wav16k/max/train-100/mix_clean
+4.3G	Libri3Mix/wav16k/max/train-100/s3
+4.3G	Libri3Mix/wav16k/max/train-100/s1
+4.3G	Libri3Mix/wav16k/max/train-100/mix_both
+4.3G	Libri3Mix/wav16k/max/train-100/noise
+30G	Libri3Mix/wav16k/max/train-100
+
+94M	Libri3Mix/wav16k/max/metadata
+
+831M	Libri3Mix/wav16k/max/test/s2
+831M	Libri3Mix/wav16k/max/test/mix_single
+831M	Libri3Mix/wav16k/max/test/mix_clean
+831M	Libri3Mix/wav16k/max/test/s3
+831M	Libri3Mix/wav16k/max/test/s1
+831M	Libri3Mix/wav16k/max/test/mix_both
+831M	Libri3Mix/wav16k/max/test/noise
+5.7G	Libri3Mix/wav16k/max/test
+
+150G	Libri3Mix/wav16k/max
+
+
+434M	Libri3Mix/wav16k/min/dev/s2
+434M	Libri3Mix/wav16k/min/dev/mix_single
+434M	Libri3Mix/wav16k/min/dev/mix_clean
+434M	Libri3Mix/wav16k/min/dev/s3
+434M	Libri3Mix/wav16k/min/dev/s1
+434M	Libri3Mix/wav16k/min/dev/mix_both
+434M	Libri3Mix/wav16k/min/dev/noise
+3.0G	Libri3Mix/wav16k/min/dev
+
+11G	Libri3Mix/wav16k/min/train-360/s2
+11G	Libri3Mix/wav16k/min/train-360/mix_single
+11G	Libri3Mix/wav16k/min/train-360/mix_clean
+11G	Libri3Mix/wav16k/min/train-360/s3
+11G	Libri3Mix/wav16k/min/train-360/s1
+11G	Libri3Mix/wav16k/min/train-360/mix_both
+11G	Libri3Mix/wav16k/min/train-360/noise
+71G	Libri3Mix/wav16k/min/train-360
+
+2.9G	Libri3Mix/wav16k/min/train-100/s2
+2.9G	Libri3Mix/wav16k/min/train-100/mix_single
+2.9G	Libri3Mix/wav16k/min/train-100/mix_clean
+2.9G	Libri3Mix/wav16k/min/train-100/s3
+2.9G	Libri3Mix/wav16k/min/train-100/s1
+2.9G	Libri3Mix/wav16k/min/train-100/mix_both
+2.9G	Libri3Mix/wav16k/min/train-100/noise
+20G	Libri3Mix/wav16k/min/train-100
+
+94M	Libri3Mix/wav16k/min/metadata
+
+406M	Libri3Mix/wav16k/min/test/s2
+406M	Libri3Mix/wav16k/min/test/mix_single
+406M	Libri3Mix/wav16k/min/test/mix_clean
+406M	Libri3Mix/wav16k/min/test/s3
+406M	Libri3Mix/wav16k/min/test/s1
+406M	Libri3Mix/wav16k/min/test/mix_both
+406M	Libri3Mix/wav16k/min/test/noise
+2.8G	Libri3Mix/wav16k/min/test
+
+97G	Libri3Mix/wav16k/min
+
+246G	Libri3Mix/wav16k
+
+
+464M	Libri3Mix/wav8k/max/dev/s2
+464M	Libri3Mix/wav8k/max/dev/mix_single
+464M	Libri3Mix/wav8k/max/dev/mix_clean
+464M	Libri3Mix/wav8k/max/dev/s3
+464M	Libri3Mix/wav8k/max/dev/s1
+464M	Libri3Mix/wav8k/max/dev/mix_both
+464M	Libri3Mix/wav8k/max/dev/noise
+3.2G	Libri3Mix/wav8k/max/dev
+
+7.8G	Libri3Mix/wav8k/max/train-360/s2
+7.8G	Libri3Mix/wav8k/max/train-360/mix_single
+7.8G	Libri3Mix/wav8k/max/train-360/mix_clean
+7.8G	Libri3Mix/wav8k/max/train-360/s3
+7.8G	Libri3Mix/wav8k/max/train-360/s1
+7.8G	Libri3Mix/wav8k/max/train-360/mix_both
+7.8G	Libri3Mix/wav8k/max/train-360/noise
+54G	Libri3Mix/wav8k/max/train-360
+
+2.2G	Libri3Mix/wav8k/max/train-100/s2
+2.2G	Libri3Mix/wav8k/max/train-100/mix_single
+2.2G	Libri3Mix/wav8k/max/train-100/mix_clean
+2.2G	Libri3Mix/wav8k/max/train-100/s3
+2.2G	Libri3Mix/wav8k/max/train-100/s1
+2.2G	Libri3Mix/wav8k/max/train-100/mix_both
+2.2G	Libri3Mix/wav8k/max/train-100/noise
+15G	Libri3Mix/wav8k/max/train-100
+
+94M	Libri3Mix/wav8k/max/metadata
+
+419M	Libri3Mix/wav8k/max/test/s2
+419M	Libri3Mix/wav8k/max/test/mix_single
+419M	Libri3Mix/wav8k/max/test/mix_clean
+419M	Libri3Mix/wav8k/max/test/s3
+419M	Libri3Mix/wav8k/max/test/s1
+419M	Libri3Mix/wav8k/max/test/mix_both
+419M	Libri3Mix/wav8k/max/test/noise
+2.9G	Libri3Mix/wav8k/max/test
+
+75G	Libri3Mix/wav8k/max
+
+220M	Libri3Mix/wav8k/min/dev/s2
+220M	Libri3Mix/wav8k/min/dev/mix_single
+220M	Libri3Mix/wav8k/min/dev/mix_clean
+220M	Libri3Mix/wav8k/min/dev/s3
+220M	Libri3Mix/wav8k/min/dev/s1
+220M	Libri3Mix/wav8k/min/dev/mix_both
+220M	Libri3Mix/wav8k/min/dev/noise
+1.6G	Libri3Mix/wav8k/min/dev
+
+5.1G	Libri3Mix/wav8k/min/train-360/s2
+5.1G	Libri3Mix/wav8k/min/train-360/mix_single
+5.1G	Libri3Mix/wav8k/min/train-360/mix_clean
+5.1G	Libri3Mix/wav8k/min/train-360/s3
+5.1G	Libri3Mix/wav8k/min/train-360/s1
+5.1G	Libri3Mix/wav8k/min/train-360/mix_both
+5.1G	Libri3Mix/wav8k/min/train-360/noise
+36G	Libri3Mix/wav8k/min/train-360
+
+1.5G	Libri3Mix/wav8k/min/train-100/s2
+1.5G	Libri3Mix/wav8k/min/train-100/mix_single
+1.5G	Libri3Mix/wav8k/min/train-100/mix_clean
+1.5G	Libri3Mix/wav8k/min/train-100/s3
+1.5G	Libri3Mix/wav8k/min/train-100/s1
+1.5G	Libri3Mix/wav8k/min/train-100/mix_both
+1.5G	Libri3Mix/wav8k/min/train-100/noise
+9.9G	Libri3Mix/wav8k/min/train-100
+
+94M	Libri3Mix/wav8k/min/metadata
+
+206M	Libri3Mix/wav8k/min/test/s2
+206M	Libri3Mix/wav8k/min/test/mix_single
+206M	Libri3Mix/wav8k/min/test/mix_clean
+206M	Libri3Mix/wav8k/min/test/s3
+206M	Libri3Mix/wav8k/min/test/s1
+206M	Libri3Mix/wav8k/min/test/mix_both
+206M	Libri3Mix/wav8k/min/test/noise
+1.5G	Libri3Mix/wav8k/min/test
+
+49G	Libri3Mix/wav8k/min
+
+124G	Libri3Mix/wav8k
+
+
+369G	Libri3Mix/
