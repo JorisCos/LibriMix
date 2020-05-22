@@ -33,8 +33,7 @@ In LibriMix you can choose :
 * The sample rate  of the dataset from 16 KHz to any frequency below. 
 * The mode of mixtures : min (the mixture ends when the shortest source
  ends) or max (the mixtures ends with the longest source)
- * The type of mixture : mix_clean (utterances only) mix_both (utterances
-  + noise) mix_single (1 utterance + noise)
+ * The type of mixture : mix_clean (utterances only) mix_both (utterances + noise) mix_single (1 utterance + noise)
 
 You can customize the generation by editing ``` generate_librimix.sh ```.
  
