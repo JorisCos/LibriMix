@@ -56,7 +56,7 @@ associated to LibriMix for reproducibility.
 Along with LibriMix, SparseLibriMix a dataset aiming towards more realistic, conversation-like scenarios
 has been released [here](https://github.com/popcornell/SparseLibriMix).
 
-(contributors: @JorisCos, @mpariente and @popcornell )
+(contributors: [@JorisCos](https://github.com/JorisCos), [@mpariente](https://github.com/mpariente) and [@popcornell](https://github.com/popcornell) )
 
 ### Citing Librimix 
 
