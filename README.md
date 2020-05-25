@@ -42,3 +42,29 @@ For the sake of transparency, we have released the metadata generation
 scripts. However, we wish to avoid any changes to the dataset, 
 especially to the test subset that shouldn't be changed under any 
 circumstance.
+
+### Why use LibriMix
+More than just an open source dataset, LibriMix aims towards generalizable speech separation.
+You can checkout section 3.3 of our paper [here](https://arxiv.org/pdf/2005.11262.pdf) for more details.
+
+### Related work
+If you wish to implement models based on LibriMix you can checkout 
+[Asteroid](https://github.com/mpariente/asteroid) and the 
+[recipe](https://github.com/mpariente/asteroid/tree/master/egs/librimix/ConvTasNet)
+associated to LibriMix for reproducibility.
+
+Along with LibriMix, SparseLibriMix a dataset aiming towards more realistic, conversation-like scenarios
+has been released [here](https://github.com/popcornell/SparseLibriMix).
+
+### Citing Librimix 
+
+```BibTex
+@misc{cosentino2020librimix,
+    title={LibriMix: An Open-Source Dataset for Generalizable Speech Separation},
+    author={Joris Cosentino and Manuel Pariente and Samuele Cornell and Antoine Deleforge and Emmanuel Vincent},
+    year={2020},
+    eprint={2005.11262},
+    archivePrefix={arXiv},
+    primaryClass={eess.AS}
+}
+```
