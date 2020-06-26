@@ -13,6 +13,19 @@ git clone https://github.com/JorisCos/LibriMix
 cd LibriMix 
 ./generate_librimix.sh storage_dir
 ```
+
+Make sure that SoX is installed on your machine.
+
+For windows :
+```
+conda install -c groakat sox
+```
+
+For Linux :
+```
+conda install -c conda-forge sox
+```
+
 You can either change `storage_dir` and `n_src` by hand in 
 the script or use the command line.  
 By default, LibriMix will be generated for 2 and 3 speakers,
@@ -56,7 +69,7 @@ associated to LibriMix for reproducibility.
 Along with LibriMix, SparseLibriMix a dataset aiming towards more realistic, conversation-like scenarios
 has been released [here](https://github.com/popcornell/SparseLibriMix).
 
-(contributors: @JorisCos, @mpariente and @popcornell )
+(contributors: [@JorisCos](https://github.com/JorisCos), [@mpariente](https://github.com/mpariente) and [@popcornell](https://github.com/popcornell) )
 
 ### Citing Librimix 
 
