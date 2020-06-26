@@ -3,8 +3,9 @@ import argparse
 import soundfile as sf
 import pandas as pd
 import numpy as np
+import functools
 from scipy.signal import resample_poly
-from tqdm import tqdm
+import tqdm.contrib.concurrent
 
 # eps secures log and division
 EPS = 1e-10
@@ -110,12 +111,12 @@ def process_metadata_file(csv_path, freqs, n_src, librispeech_dir, wham_dir,
             for subdir in subdirs:
                 os.makedirs(os.path.join(dir_path, subdir))
             # Go through the metadata file
-            process_utterance(md_file, librispeech_dir, wham_dir, freq, mode,
-                              subdirs, dir_path, subset_metadata_path, n_src)
+            process_utterances(md_file, librispeech_dir, wham_dir, freq, mode,
+                               subdirs, dir_path, subset_metadata_path, n_src)
 
 
-def process_utterance(md_file, librispeech_dir, wham_dir, freq, mode, subdirs,
-                      dir_path, subset_metadata_path, n_src):
+def process_utterances(md_file, librispeech_dir, wham_dir, freq, mode, subdirs,
+                       dir_path, subset_metadata_path, n_src):
     # Dictionary that will contain all metadata
     md_dic = {}
     # Get dir name
@@ -129,50 +130,65 @@ def process_utterance(md_file, librispeech_dir, wham_dir, freq, mode, subdirs,
                 n_src, subdir)
 
     # Go through the metadata file and generate mixtures
-    for index, row in tqdm(md_file.iterrows(), total=len(md_file)):
-        # Get sources and mixture infos
-        mix_id, gain_list, sources = read_sources(row, n_src, librispeech_dir,
-                                                  wham_dir)
-        # Transform sources
-        transformed_sources = transform_sources(sources, freq, mode, gain_list)
-        # Write the sources and get their paths
-        abs_source_path_list = write_sources(mix_id,
-                                             transformed_sources,
-                                             subdirs, dir_path, freq,
-                                             n_src)
-        # Write the noise and get its path
-        abs_noise_path = write_noise(mix_id, transformed_sources, dir_path,
-                                     freq)
-        # Mixtures are different depending on the subdir
-        for subdir in subdirs:
-            if subdir == 'mix_clean':
-                sources_to_mix = transformed_sources[:n_src]
-            elif subdir == 'mix_both':
-                sources_to_mix = transformed_sources
-            elif subdir == 'mix_single':
-                sources_to_mix = [transformed_sources[0],
-                                  transformed_sources[-1]]
-            else:
-                continue
-
-            # Mix sources
-            mixture = mix(sources_to_mix)
-            # Write mixture and get its path
-            abs_mix_path = write_mix(mix_id, mixture, dir_path, subdir, freq)
-            length = len(mixture)
-            # Compute SNR
-            snr_list = compute_snr_list(mixture, sources_to_mix)
+    for results in tqdm.contrib.concurrent.process_map(
+        functools.partial(
+            process_utterance, 
+            n_src, librispeech_dir, wham_dir, freq, mode, subdirs, dir_path),
+        [row for _, row in md_file.iterrows()],
+        chunksize=10,
+    ):
+        for mix_id, snr_list, abs_mix_path, abs_source_path_list, abs_noise_path, length, subdir in results:
             # Add line to the dataframes
             add_to_metrics_metadata(md_dic[f"metrics_{dir_name}_{subdir}"],
                                     mix_id, snr_list)
             add_to_mixture_metadata(md_dic[f'mixture_{dir_name}_{subdir}'],
                                     mix_id, abs_mix_path, abs_source_path_list,
                                     abs_noise_path, length, subdir)
+
     # Save the metadata files
     for md_df in md_dic:
         # Save the metadata in out_dir ./data/wavxk/mode/subset
         save_path_mixture = os.path.join(subset_metadata_path, md_df + '.csv')
         md_dic[md_df].to_csv(save_path_mixture, index=False)
+
+
+def process_utterance(n_src, librispeech_dir, wham_dir, freq, mode, subdirs, dir_path, row):
+    res = []
+    # Get sources and mixture infos
+    mix_id, gain_list, sources = read_sources(row, n_src, librispeech_dir,
+                                              wham_dir)
+    # Transform sources
+    transformed_sources = transform_sources(sources, freq, mode, gain_list)
+    # Write the sources and get their paths
+    abs_source_path_list = write_sources(mix_id,
+                                         transformed_sources,
+                                         subdirs, dir_path, freq,
+                                         n_src)
+    # Write the noise and get its path
+    abs_noise_path = write_noise(mix_id, transformed_sources, dir_path,
+                                 freq)
+    # Mixtures are different depending on the subdir
+    for subdir in subdirs:
+        if subdir == 'mix_clean':
+            sources_to_mix = transformed_sources[:n_src]
+        elif subdir == 'mix_both':
+            sources_to_mix = transformed_sources
+        elif subdir == 'mix_single':
+            sources_to_mix = [transformed_sources[0],
+                              transformed_sources[-1]]
+        else:
+            continue
+
+        # Mix sources
+        mixture = mix(sources_to_mix)
+        # Write mixture and get its path
+        abs_mix_path = write_mix(mix_id, mixture, dir_path, subdir, freq)
+        length = len(mixture)
+        # Compute SNR
+        snr_list = compute_snr_list(mixture, sources_to_mix)
+        res.append((mix_id, snr_list, abs_mix_path, abs_source_path_list, abs_noise_path, length, subdir))
+
+    return res
 
 
 def create_empty_metrics_md(n_src, subdir):

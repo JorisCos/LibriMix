@@ -2,7 +2,8 @@ import os
 import argparse
 import soundfile as sf
 import glob
-from tqdm import tqdm
+import tqdm.contrib.concurrent
+import functools
 from pysndfx import AudioEffectsChain
 
 # Command line arguments
@@ -25,18 +26,25 @@ def main(args):
 
 
 def augment_noise(sound_paths, speed):
+    print(f"Change speed with factor {speed}")
+    tqdm.contrib.concurrent.process_map(
+        functools.partial(apply_fx, speed=speed),
+        sound_paths,
+        chunksize=10
+    )
+
+
+def apply_fx(sound_path, speed):
     # Get the effect
     fx = (AudioEffectsChain().speed(speed))
-    print(f"Change speed with factor {speed}")
-    for sound_path in tqdm(sound_paths, total=len(sound_paths)):
-        s, rate = sf.read(sound_path)
-        # Get 1st channel
-        s = s[:, 0]
-        # Apply effect
-        s = fx(s)
-        # Write the file
-        sf.write(f"""{sound_path.replace(
-            '.wav',f"sp{str(speed).replace('.','')}" +'.wav')}""", s, rate)
+    s, rate = sf.read(sound_path)
+    # Get 1st channel
+    s = s[:, 0]
+    # Apply effect
+    s = fx(s)
+    # Write the file
+    sf.write(f"""{sound_path.replace(
+        '.wav',f"sp{str(speed).replace('.','')}" +'.wav')}""", s, rate)
 
 
 if __name__ == "__main__":
