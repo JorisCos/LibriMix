@@ -64,8 +64,9 @@ wham &
 
 wait
 
-
+# If you wish to rerun this script in the future please comment this line out.
 python scripts/augment_train_noise.py --wham_dir $wham_dir
+
 for n_src in 2 3; do
   metadata_dir=metadata/Libri$n_src"Mix"
   python scripts/create_librimix_from_metadata.py --librispeech_dir $librispeech_dir \
