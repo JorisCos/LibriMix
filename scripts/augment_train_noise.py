@@ -22,9 +22,7 @@ def main(args):
     # Avoid running this script if it already have been run
     if len(sound_paths) == 60000:
         print("It appears that augmented files have already been generated.\n"
-              " If the augmentation process went well the first time you ran "
-              "generate_librimix.sh please comment out the line relative to"
-              " augment_train_noise.py.\nSkipping data augmentation.")
+              "Skipping data augmentation.")
         return
     elif len(sound_paths) != 20000:
         print("It appears that augmented files have not been generated properly\n"
