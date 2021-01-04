@@ -19,10 +19,26 @@ def main(args):
     # List files in that dir
     sound_paths = glob.glob(os.path.join(subdir, '**/*.wav'),
                             recursive=True)
-    print(f'Augmenting {subdir} files')
-    # Transform audio speed
-    augment_noise(sound_paths, 0.8)
-    augment_noise(sound_paths, 1.2)
+    # Avoid running this script if it already have been run
+    if len(sound_paths) == 60000:
+        print("It appears that augmented files have already been generated.\n"
+              "Skipping data augmentation.")
+        return
+    elif len(sound_paths) != 20000:
+        print("It appears that augmented files have not been generated properly\n"
+              "Resuming augmentation.")
+        originals = [x for x in sound_paths if 'sp' not in x]
+        to_be_removed_08 = [x.replace('sp08','') for x in sound_paths if 'sp08' in x]
+        to_be_removed_12 = [x.replace('sp12','') for x in sound_paths if 'sp12' in x ]
+        sound_paths_08 = list(set(originals) - set(to_be_removed_08))
+        sound_paths_12 = list(set(originals) - set(to_be_removed_12))
+        augment_noise(sound_paths_08, 0.8)
+        augment_noise(sound_paths_12, 1.2)
+    else:
+        print(f'Augmenting {subdir} files')
+        # Transform audio speed
+        augment_noise(sound_paths, 0.8)
+        augment_noise(sound_paths, 1.2)
 
 
 def augment_noise(sound_paths, speed):
