@@ -205,7 +205,7 @@ def set_utt_pairs(librispeech_md_file, pair_list, n_src):
     # A counter
     c = 0
     # Index of the rows in the metadata file
-    index = list(range(len(librispeech_md_file)))
+    index = set(range(len(librispeech_md_file)))
 
     # Try to create pairs with different speakers end after 200 fails
     while len(index) >= n_src and c < 200:
@@ -223,6 +223,29 @@ def set_utt_pairs(librispeech_md_file, pair_list, n_src):
                 index.remove(couple[i])
             pair_list.append(couple)
             c = 0
+
+    # Shaked - faster
+    # while len(index) >= n_src:
+    #     c = 0
+    #     couple = []
+    #     while len(couple) < n_src and c < 200:
+    #         speaker_list = set()
+    #         samples = random.sample(index, min(len(index), 10 * n_src))
+    #         found = False
+    #         for sample in samples:
+    #             speaker_id = librispeech_md_file.iloc[sample]['speaker_ID']
+    #             if speaker_id not in speaker_list:
+    #                 speaker_list.add(speaker_id)
+    #                 couple.append(sample)
+    #                 index.remove(sample)
+    #                 found = True
+    #                 if len(couple) == n_src:
+    #                     break
+    #         if not found:
+    #             c += 1
+    #     if len(couple) == n_src:
+    #         pair_list.append(couple)
+
     return pair_list
 
 
@@ -271,14 +294,28 @@ def set_noise_pairs(pairs, noise_pairs, librispeech_md_file, wham_md_file):
 
 def remove_duplicates(utt_pairs, noise_pairs):
     print('Removing duplicates')
-    # look for identical mixtures O(n²)
-    for i, (pair, pair_noise) in enumerate(zip(utt_pairs, noise_pairs)):
-        for j, (du_pair, du_pair_noise) in enumerate(
-                zip(utt_pairs, noise_pairs)):
-            # sort because [s1,s2] = [s2,s1]
-            if sorted(pair) == sorted(du_pair) and i != j:
-                utt_pairs.remove(du_pair)
-                noise_pairs.remove(du_pair_noise)
+    # Shaked - faster
+    utt_pairs_sorted = [sorted(pair) for pair in utt_pairs]
+    indices_to_remove = set()
+    for i in range(len(utt_pairs_sorted)):
+        for j in range(i+1, len(utt_pairs_sorted)):
+            if utt_pairs_sorted[i] == utt_pairs_sorted[j]:
+                indices_to_remove.add(j)
+    # indices_to_remove = sorted(indices_to_remove, reverse=True)
+    # for idx in indices_to_remove:
+    #     del utt_pairs[idx]
+    #     del noise_pairs[idx]
+    utt_pairs = [item for i, item in enumerate(utt_pairs) if i not in indices_to_remove]
+    noise_pairs = [item for i, item in enumerate(noise_pairs) if i not in indices_to_remove]
+
+    # # look for identical mixtures O(n²)
+    # for i, (pair, pair_noise) in enumerate(zip(utt_pairs, noise_pairs)):
+    #     for j, (du_pair, du_pair_noise) in enumerate(
+    #             zip(utt_pairs, noise_pairs)):
+    #         # sort because [s1,s2] = [s2,s1]
+    #         if sorted(pair) == sorted(du_pair) and i != j:
+    #             utt_pairs.remove(du_pair)
+    #             noise_pairs.remove(du_pair_noise)
     return utt_pairs, noise_pairs
 
 
