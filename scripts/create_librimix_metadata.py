@@ -87,7 +87,7 @@ def create_librimix_metadata(librispeech_dir, librispeech_md_dir, wham_dir,
                   'to_be_ignored list')
             return
 
-    work_in_parallel = False  # No need for parallel for now(?)
+    work_in_parallel = True
     if work_in_parallel:
         import multiprocessing
         jobs = []
@@ -96,6 +96,7 @@ def create_librimix_metadata(librispeech_dir, librispeech_md_dir, wham_dir,
                                         args=(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, librispeech_md_file))
             jobs.append(p)
             p.start()
+        [job.join() for job in jobs]  # wait for all to finish
     else:
         for librispeech_md_file in librispeech_md_files:
             create_librimix_metadata_single_set(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, librispeech_md_file)
