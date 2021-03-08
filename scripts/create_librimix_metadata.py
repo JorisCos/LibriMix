@@ -87,21 +87,18 @@ def create_librimix_metadata(librispeech_dir, librispeech_md_dir, wham_dir,
                   'to_be_ignored list')
             return
 
-    # Multi-processing:
-    import multiprocessing
-    jobs = []
-    for librispeech_md_file in librispeech_md_files:
-        p = multiprocessing.Process(target=create_librimix_metadata_single_set,
-                                    args=(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, librispeech_md_file))
-        jobs.append(p)
-        p.start()
-    # pool = multiprocessing.Pool(len(librispeech_md_files))
-    # def func(file_name):
-    #     create_librimix_metadata_single_set(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, file_name)
-    # # func = lambda file_name: create_librimix_metadata_single_set(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, file_name)
-    # pool.map(func, librispeech_md_files)
-    # for librispeech_md_file in librispeech_md_files:  # to be parallel
-    #     create_librimix_metadata_single_set(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, librispeech_md_file)
+    work_in_parallel = False  # No need for parallel for now(?)
+    if work_in_parallel:
+        import multiprocessing
+        jobs = []
+        for librispeech_md_file in librispeech_md_files:
+            p = multiprocessing.Process(target=create_librimix_metadata_single_set,
+                                        args=(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, librispeech_md_file))
+            jobs.append(p)
+            p.start()
+    else:
+        for librispeech_md_file in librispeech_md_files:
+            create_librimix_metadata_single_set(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, librispeech_md_file)
 
 
 def create_librimix_metadata_single_set(librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src, librispeech_md_file):
@@ -212,13 +209,18 @@ def set_pairs(librispeech_md_file, wham_md_file, n_src):
     if 'train' in librispeech_md_file.iloc[0]['subset']:
         utt_pairs = set_utt_pairs(librispeech_md_file, utt_pairs, n_src)
         noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
-                                      librispeech_md_file, wham_md_file)
+                                      librispeech_md_file, wham_md_file, len(utt_pairs))
     # Otherwise we want 3000 mixtures
     else:
         while len(utt_pairs) < 3000:
-            utt_pairs = set_utt_pairs(librispeech_md_file, utt_pairs, n_src)
-            noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
-                                          librispeech_md_file, wham_md_file)
+            new_utt_pairs = set_utt_pairs(librispeech_md_file, [], n_src)
+            new_noise_pairs = set_noise_pairs(new_utt_pairs, [],
+                                              librispeech_md_file, wham_md_file, len(utt_pairs) + len(new_utt_pairs))
+            utt_pairs += new_utt_pairs
+            noise_pairs += new_noise_pairs
+            # utt_pairs = set_utt_pairs(librispeech_md_file, utt_pairs, n_src)
+            # noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
+            #                               librispeech_md_file, wham_md_file)
             utt_pairs, noise_pairs = remove_duplicates(utt_pairs, noise_pairs)
         utt_pairs = utt_pairs[:3000]
         noise_pairs = noise_pairs[:3000]
@@ -276,35 +278,35 @@ def set_utt_pairs(librispeech_md_file, pair_list, n_src):
     return pair_list
 
 
-def set_noise_pairs(pairs, noise_pairs, librispeech_md_file, wham_md_file):
+def set_noise_pairs(pairs, noise_pairs, librispeech_md_file, wham_md_file, total_num_of_pairs):
     print('Generating pairs')
+    is_train = 'train' in librispeech_md_file.iloc[0]['subset']
     # Initially take not augmented data
     md = wham_md_file[wham_md_file['augmented'] == False]
     # If there are more mixtures than noises then use augmented data
-    if len(pairs) > len(md):
+    if total_num_of_pairs > len(md):
         md = wham_md_file
     # Copy pairs because we are going to remove elements from pairs
     for pair in pairs.copy():
-        # get sources infos
-        sources = [librispeech_md_file.iloc[pair[i]]
-                   for i in range(len(pair))]
-        # get max_length
-        length_list = [source['length'] for source in sources]
-        max_length = max(length_list)
+        # # get sources infos
+        # sources = [librispeech_md_file.iloc[pair[i]]
+        #            for i in range(len(pair))]
+        # # get max_length
+        # length_list = [source['length'] for source in sources]
+        # max_length = max(length_list)
+        max_length = max(librispeech_md_file.iloc[elem]['length'] for elem in pair)
         # Ideal choices are noises longer than max_length
         possible = md[md['length'] >= max_length]
-        # if possible is not empty
-        try:
+        if not possible.empty:
             # random noise longer than max_length
             pair_noise = random.sample(list(possible.index), 1)
             # add that noise's index to the list
             noise_pairs.append(pair_noise)
             # remove that noise from the remaining noises
             md = md.drop(pair_noise)
-        # if possible is empty
-        except ValueError:
+        else:
             # if we deal with training files
-            if 'train' in librispeech_md_file.iloc[0]['subset']:
+            if is_train:
                 # take the longest noise remaining
                 pair_noise = list(md.index)[-1]
                 # add it to noise list
@@ -315,6 +317,28 @@ def set_noise_pairs(pairs, noise_pairs, librispeech_md_file, wham_md_file):
             else:
                 # just delete the pair we will redo this process
                 pairs.remove(pair)
+        # # if possible is not empty
+        # try:
+        #     # random noise longer than max_length
+        #     pair_noise = random.sample(list(possible.index), 1)
+        #     # add that noise's index to the list
+        #     noise_pairs.append(pair_noise)
+        #     # remove that noise from the remaining noises
+        #     md = md.drop(pair_noise)
+        # # if possible is empty
+        # except ValueError:
+        #     # if we deal with training files
+        #     if is_train:
+        #         # take the longest noise remaining
+        #         pair_noise = list(md.index)[-1]
+        #         # add it to noise list
+        #         noise_pairs.append(pair_noise)
+        #         # remove it from remaining noises
+        #         md = md.drop(pair_noise)
+        #     # if dev or test
+        #     else:
+        #         # just delete the pair we will redo this process
+        #         pairs.remove(pair)
 
     return noise_pairs
 
