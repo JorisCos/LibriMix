@@ -67,7 +67,7 @@ def create_librimix_metadata(librispeech_dir, librispeech_md_dir, wham_dir,
     wham_md_files = os.listdir(wham_md_dir)
     # If you wish to ignore some metadata files add their name here
     # Example : to_be_ignored = ['dev-other.csv']
-    to_be_ignored = ['train-clean-360.csv']  # TEMP: We don't need train-360
+    to_be_ignored = ['train-clean-100.csv']  # We don't need train-100
 
     check_already_generated(md_dir, dataset, to_be_ignored,
                             librispeech_md_files)
@@ -211,9 +211,10 @@ def set_pairs(librispeech_md_file, wham_md_file, n_src):
         utt_pairs = set_utt_pairs(librispeech_md_file, utt_pairs, n_src)
         noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
                                       librispeech_md_file, wham_md_file, len(utt_pairs))
-    # Otherwise we want 3000 mixtures
+    # Otherwise we want 3000 or 1000 mixtures
     else:
-        while len(utt_pairs) < 3000:
+        target_num_samples = 3000 if n_src < 10 else 1000
+        while len(utt_pairs) < target_num_samples:
             new_utt_pairs = set_utt_pairs(librispeech_md_file, [], n_src)
             new_noise_pairs = set_noise_pairs(new_utt_pairs, [],
                                               librispeech_md_file, wham_md_file, len(utt_pairs) + len(new_utt_pairs))
@@ -223,8 +224,8 @@ def set_pairs(librispeech_md_file, wham_md_file, n_src):
             # noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
             #                               librispeech_md_file, wham_md_file)
             utt_pairs, noise_pairs = remove_duplicates(utt_pairs, noise_pairs)
-        utt_pairs = utt_pairs[:3000]
-        noise_pairs = noise_pairs[:3000]
+        utt_pairs = utt_pairs[:target_num_samples]
+        noise_pairs = noise_pairs[:target_num_samples]
 
     return utt_pairs, noise_pairs
 
