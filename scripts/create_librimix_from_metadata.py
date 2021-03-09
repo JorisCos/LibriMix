@@ -344,6 +344,7 @@ def write_sources(mix_id, transformed_sources, subdirs, dir_path, freq, n_src):
     for src, src_dir in zip(transformed_sources[:n_src], subdirs[:n_src]):
         save_path = os.path.join(dir_path, src_dir, ex_filename)
         abs_save_path = os.path.abspath(save_path)
+        ensure_dir(os.path.dirname(abs_save_path))
         sf.write(abs_save_path, src, freq)
         abs_source_path_list.append(abs_save_path)
     return abs_source_path_list
@@ -355,6 +356,7 @@ def write_noise(mix_id, transformed_sources, dir_path, freq):
     ex_filename = mix_id + '.wav'
     save_path = os.path.join(dir_path, 'noise', ex_filename)
     abs_save_path = os.path.abspath(save_path)
+    ensure_dir(os.path.dirname(abs_save_path))
     sf.write(abs_save_path, noise, freq)
     return abs_save_path
 
@@ -373,6 +375,7 @@ def write_mix(mix_id, mixture, dir_path, subdir, freq):
     ex_filename = mix_id + '.wav'
     save_path = os.path.join(dir_path, subdir, ex_filename)
     abs_save_path = os.path.abspath(save_path)
+    ensure_dir(os.path.dirname(abs_save_path))
     sf.write(abs_save_path, mixture, freq)
     return abs_save_path
 
@@ -408,6 +411,11 @@ def add_to_mixture_metadata(mix_df, mix_id, abs_mix_path, abs_sources_path,
         sources_path = [abs_sources_path[0]]
     row_mixture = [mix_id, abs_mix_path] + sources_path + noise_path + [length]
     mix_df.loc[len(mix_df)] = row_mixture
+
+
+def ensure_dir(d):
+    if not os.path.exists(d):
+        os.makedirs(d)
 
 
 if __name__ == "__main__":
