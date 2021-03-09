@@ -188,15 +188,16 @@ def set_pairs(librispeech_md_file, wham_md_file, n_src):
         utt_pairs = set_utt_pairs(librispeech_md_file, utt_pairs, n_src)
         noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
                                       librispeech_md_file, wham_md_file)
-    # Otherwise we want 3000 mixtures
+    # Otherwise we want 3000 or 1000 mixtures
     else:
-        while len(utt_pairs) < 3000:
+        target_num_samples = 3000 if n_src < 10 else 1000
+        while len(utt_pairs) < target_num_samples:
             utt_pairs = set_utt_pairs(librispeech_md_file, utt_pairs, n_src)
             noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
                                           librispeech_md_file, wham_md_file)
             utt_pairs, noise_pairs = remove_duplicates(utt_pairs, noise_pairs)
-        utt_pairs = utt_pairs[:3000]
-        noise_pairs = noise_pairs[:3000]
+        utt_pairs = utt_pairs[:target_num_samples]
+        noise_pairs = noise_pairs[:target_num_samples]
 
     return utt_pairs, noise_pairs
 
