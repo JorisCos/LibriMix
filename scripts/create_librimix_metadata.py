@@ -67,7 +67,7 @@ def create_librimix_metadata(librispeech_dir, librispeech_md_dir, wham_dir,
     wham_md_files = os.listdir(wham_md_dir)
     # If you wish to ignore some metadata files add their name here
     # Example : to_be_ignored = ['dev-other.csv']
-    to_be_ignored = []
+    to_be_ignored = ['train-clean-100.csv']
 
     check_already_generated(md_dir, dataset, to_be_ignored,
                             librispeech_md_files)
