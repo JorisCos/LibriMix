@@ -4,6 +4,7 @@ import soundfile as sf
 import pandas as pd
 import numpy as np
 import functools
+import hashlib
 from scipy.signal import resample_poly
 import tqdm.contrib.concurrent
 
@@ -46,6 +47,8 @@ def main(args):
     if librimix_outdir is None:
         librimix_outdir = os.path.dirname(metadata_dir)
     librimix_outdir = os.path.join(librimix_outdir, f'Libri{n_src}Mix')
+    # librimix_outdir = os.path.join(librimix_outdir, f'Libri{n_src}Mix_DEBUG_HASH') # TEMPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
+
     # Get the desired frequencies
     freqs = args.freqs
     freqs = [freq.lower() for freq in freqs]
@@ -137,12 +140,12 @@ def process_utterances(md_file, librispeech_dir, wham_dir, freq, mode, subdirs,
         [row for _, row in md_file.iterrows()],
         chunksize=10,
     ):
-        for mix_id, snr_list, abs_mix_path, abs_source_path_list, abs_noise_path, length, subdir in results:
+        for mix_id, orig_mix_id, snr_list, abs_mix_path, abs_source_path_list, abs_noise_path, length, subdir in results:
             # Add line to the dataframes
             add_to_metrics_metadata(md_dic[f"metrics_{dir_name}_{subdir}"],
-                                    mix_id, snr_list)
+                                    mix_id, orig_mix_id, snr_list)
             add_to_mixture_metadata(md_dic[f'mixture_{dir_name}_{subdir}'],
-                                    mix_id, abs_mix_path, abs_source_path_list,
+                                    mix_id, orig_mix_id, abs_mix_path, abs_source_path_list,
                                     abs_noise_path, length, subdir)
 
     # Save the metadata files
@@ -157,6 +160,12 @@ def process_utterance(n_src, librispeech_dir, wham_dir, freq, mode, subdirs, dir
     # Get sources and mixture infos
     mix_id, gain_list, sources = read_sources(row, n_src, librispeech_dir,
                                               wham_dir)
+
+    orig_mix_id = mix_id
+    if n_src >= 10:  # encode mix_id because it might be too long for a file name (max 255 chars in Linux)
+        hash_object = hashlib.md5(mix_id.encode())
+        mix_id = hash_object.hexdigest()
+
     # Transform sources
     transformed_sources = transform_sources(sources, freq, mode, gain_list)
     # Write the sources and get their paths
@@ -186,7 +195,7 @@ def process_utterance(n_src, librispeech_dir, wham_dir, freq, mode, subdirs, dir
         length = len(mixture)
         # Compute SNR
         snr_list = compute_snr_list(mixture, sources_to_mix)
-        res.append((mix_id, snr_list, abs_mix_path, abs_source_path_list, abs_noise_path, length, subdir))
+        res.append((mix_id, orig_mix_id, snr_list, abs_mix_path, abs_source_path_list, abs_noise_path, length, subdir))
 
     return res
 
@@ -195,6 +204,7 @@ def create_empty_metrics_md(n_src, subdir):
     """ Create the metrics dataframe"""
     metrics_dataframe = pd.DataFrame()
     metrics_dataframe['mixture_ID'] = {}
+    metrics_dataframe['original_mixture_ID'] = {}
     if subdir == 'mix_clean':
         for i in range(n_src):
             metrics_dataframe[f"source_{i + 1}_SNR"] = {}
@@ -212,6 +222,7 @@ def create_empty_mixture_md(n_src, subdir):
     """ Create the mixture dataframe"""
     mixture_dataframe = pd.DataFrame()
     mixture_dataframe['mixture_ID'] = {}
+    mixture_dataframe['original_mixture_ID'] = {}
     mixture_dataframe['mixture_path'] = {}
     if subdir == 'mix_clean':
         for i in range(n_src):
@@ -394,13 +405,13 @@ def snr_xy(x, y):
     return 10 * np.log10(np.mean(x ** 2) / (np.mean(y ** 2) + EPS) + EPS)
 
 
-def add_to_metrics_metadata(metrics_df, mixture_id, snr_list):
+def add_to_metrics_metadata(metrics_df, mixture_id, original_mixture_id, snr_list):
     """ Add a new line to metrics_df"""
-    row_metrics = [mixture_id] + snr_list
+    row_metrics = [mixture_id, original_mixture_id] + snr_list
     metrics_df.loc[len(metrics_df)] = row_metrics
 
 
-def add_to_mixture_metadata(mix_df, mix_id, abs_mix_path, abs_sources_path,
+def add_to_mixture_metadata(mix_df, mix_id, orig_mix_id, abs_mix_path, abs_sources_path,
                             abs_noise_path, length, subdir):
     """ Add a new line to mixture_df """
     sources_path = abs_sources_path
@@ -409,7 +420,7 @@ def add_to_mixture_metadata(mix_df, mix_id, abs_mix_path, abs_sources_path,
         noise_path = []
     elif subdir == 'mix_single':
         sources_path = [abs_sources_path[0]]
-    row_mixture = [mix_id, abs_mix_path] + sources_path + noise_path + [length]
+    row_mixture = [mix_id, orig_mix_id, abs_mix_path] + sources_path + noise_path + [length]
     mix_df.loc[len(mix_df)] = row_mixture
 
 
