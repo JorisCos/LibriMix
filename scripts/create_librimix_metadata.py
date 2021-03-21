@@ -204,16 +204,22 @@ def create_librimix_df(librispeech_md_file, librispeech_dir,
 def set_pairs(librispeech_md_file, wham_md_file, n_src):
     """ set pairs of sources to make the mixture """
     # Initialize list for pairs sources
+
+    RE_USE_UTTERANCES_FOR_TRAIN = True
+
     utt_pairs = []
     noise_pairs = []
     # In train sets utterance are only used once
-    if 'train' in librispeech_md_file.iloc[0]['subset']:
+    is_train = 'train' in librispeech_md_file.iloc[0]['subset']
+    if is_train and not RE_USE_UTTERANCES_FOR_TRAIN:
         utt_pairs = set_utt_pairs(librispeech_md_file, utt_pairs, n_src)
         noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
                                       librispeech_md_file, wham_md_file, len(utt_pairs))
     # Otherwise we want 3000 or 1000 mixtures
     else:
         target_num_samples = 3000 if n_src < 10 else 1000
+        if is_train:
+            target_num_samples = 20000
         while len(utt_pairs) < target_num_samples:
             new_utt_pairs = set_utt_pairs(librispeech_md_file, [], n_src)
             new_noise_pairs = set_noise_pairs(new_utt_pairs, [],
