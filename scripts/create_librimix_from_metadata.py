@@ -47,8 +47,6 @@ def main(args):
     if librimix_outdir is None:
         librimix_outdir = os.path.dirname(metadata_dir)
     librimix_outdir = os.path.join(librimix_outdir, f'Libri{n_src}Mix')
-    # librimix_outdir = os.path.join(librimix_outdir, f'Libri{n_src}Mix_DEBUG_HASH') # TEMPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP
-
     # Get the desired frequencies
     freqs = args.freqs
     freqs = [freq.lower() for freq in freqs]
@@ -162,7 +160,7 @@ def process_utterance(n_src, librispeech_dir, wham_dir, freq, mode, subdirs, dir
                                               wham_dir)
 
     orig_mix_id = mix_id
-    if n_src >= 10:  # encode mix_id because it might be too long for a file name (max 255 chars in Linux)
+    if n_src >= 10:  # SD: encode mix_id because it might be too long for a file name (max 255 chars in Linux)
         hash_object = hashlib.md5(mix_id.encode())
         mix_id = hash_object.hexdigest()
 

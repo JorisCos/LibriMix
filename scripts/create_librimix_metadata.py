@@ -87,8 +87,10 @@ def create_librimix_metadata(librispeech_dir, librispeech_md_dir, wham_dir,
                   'to_be_ignored list')
             return
 
-    work_in_parallel = True
+    work_in_parallel = False
     if work_in_parallel:
+        import warnings
+        warnings.warn("Running in parallel reduces running time, but might create a non-reproducible samples selection.")
         import multiprocessing
         jobs = []
         for librispeech_md_file in librispeech_md_files:
@@ -205,7 +207,7 @@ def set_pairs(librispeech_md_file, wham_md_file, n_src):
     """ set pairs of sources to make the mixture """
     # Initialize list for pairs sources
 
-    RE_USE_UTTERANCES_FOR_TRAIN = True
+    RE_USE_UTTERANCES_FOR_TRAIN = False
 
     utt_pairs = []
     noise_pairs = []
@@ -221,14 +223,12 @@ def set_pairs(librispeech_md_file, wham_md_file, n_src):
         if is_train:
             target_num_samples = 20000
         while len(utt_pairs) < target_num_samples:
+            # SD: A bug was fixed here, where all utt were added instead of just the new ones of each iteration.
             new_utt_pairs = set_utt_pairs(librispeech_md_file, [], n_src)
             new_noise_pairs = set_noise_pairs(new_utt_pairs, [],
                                               librispeech_md_file, wham_md_file, len(utt_pairs) + len(new_utt_pairs))
             utt_pairs += new_utt_pairs
             noise_pairs += new_noise_pairs
-            # utt_pairs = set_utt_pairs(librispeech_md_file, utt_pairs, n_src)
-            # noise_pairs = set_noise_pairs(utt_pairs, noise_pairs,
-            #                               librispeech_md_file, wham_md_file)
             utt_pairs, noise_pairs = remove_duplicates(utt_pairs, noise_pairs)
         utt_pairs = utt_pairs[:target_num_samples]
         noise_pairs = noise_pairs[:target_num_samples]
@@ -237,29 +237,7 @@ def set_pairs(librispeech_md_file, wham_md_file, n_src):
 
 
 def set_utt_pairs(librispeech_md_file, pair_list, n_src):
-    # # A counter
-    # c = 0
-    # # Index of the rows in the metadata file
-    # index = set(range(len(librispeech_md_file)))
-    #
-    # # Try to create pairs with different speakers end after 200 fails
-    # while len(index) >= n_src and c < 200:
-    #     couple = random.sample(index, n_src)
-    #     # Check that speakers are different
-    #     speaker_list = set([librispeech_md_file.iloc[couple[i]]['speaker_ID']
-    #                         for i in range(n_src)])
-    #     # If there are duplicates then increment the counter
-    #     if len(speaker_list) != n_src:
-    #         c += 1
-    #     # Else append the combination to pair_list and erase the combination
-    #     # from the available indexes
-    #     else:
-    #         for i in range(n_src):
-    #             index.remove(couple[i])
-    #         pair_list.append(couple)
-    #         c = 0
-
-    # Shaked - faster
+    # SD: This function was changed to work faster
     index = set(range(len(librispeech_md_file)))
 
     while len(index) >= n_src:
@@ -296,12 +274,7 @@ def set_noise_pairs(pairs, noise_pairs, librispeech_md_file, wham_md_file, total
         md = wham_md_file
     # Copy pairs because we are going to remove elements from pairs
     for pair in pairs.copy():
-        # # get sources infos
-        # sources = [librispeech_md_file.iloc[pair[i]]
-        #            for i in range(len(pair))]
-        # # get max_length
-        # length_list = [source['length'] for source in sources]
-        # max_length = max(length_list)
+        # get max_length
         max_length = max(librispeech_md_file.iloc[elem]['length'] for elem in pair)
         # Ideal choices are noises longer than max_length
         possible = md[md['length'] >= max_length]
@@ -325,57 +298,24 @@ def set_noise_pairs(pairs, noise_pairs, librispeech_md_file, wham_md_file, total
             else:
                 # just delete the pair we will redo this process
                 pairs.remove(pair)
-        # # if possible is not empty
-        # try:
-        #     # random noise longer than max_length
-        #     pair_noise = random.sample(list(possible.index), 1)
-        #     # add that noise's index to the list
-        #     noise_pairs.append(pair_noise)
-        #     # remove that noise from the remaining noises
-        #     md = md.drop(pair_noise)
-        # # if possible is empty
-        # except ValueError:
-        #     # if we deal with training files
-        #     if is_train:
-        #         # take the longest noise remaining
-        #         pair_noise = list(md.index)[-1]
-        #         # add it to noise list
-        #         noise_pairs.append(pair_noise)
-        #         # remove it from remaining noises
-        #         md = md.drop(pair_noise)
-        #     # if dev or test
-        #     else:
-        #         # just delete the pair we will redo this process
-        #         pairs.remove(pair)
 
     return noise_pairs
 
 
 def remove_duplicates(utt_pairs, noise_pairs):
+    # SD: This function was changed to work faster
     print('Removing duplicates')
-    # Shaked - faster
     utt_pairs_sorted = [sorted(pair) for pair in utt_pairs]
     indices_to_remove = set()
     for i in range(len(utt_pairs_sorted)):
         for j in range(i+1, len(utt_pairs_sorted)):
             if utt_pairs_sorted[i] == utt_pairs_sorted[j]:
                 indices_to_remove.add(j)
-    # indices_to_remove = sorted(indices_to_remove, reverse=True)
-    # for idx in indices_to_remove:
-    #     del utt_pairs[idx]
-    #     del noise_pairs[idx]
+
     if len(indices_to_remove) > 0:
         utt_pairs = [item for i, item in enumerate(utt_pairs) if i not in indices_to_remove]
         noise_pairs = [item for i, item in enumerate(noise_pairs) if i not in indices_to_remove]
 
-    # # look for identical mixtures O(n²)
-    # for i, (pair, pair_noise) in enumerate(zip(utt_pairs, noise_pairs)):
-    #     for j, (du_pair, du_pair_noise) in enumerate(
-    #             zip(utt_pairs, noise_pairs)):
-    #         # sort because [s1,s2] = [s2,s1]
-    #         if sorted(pair) == sorted(du_pair) and i != j:
-    #             utt_pairs.remove(du_pair)
-    #             noise_pairs.remove(du_pair_noise)
     return utt_pairs, noise_pairs
 
 
