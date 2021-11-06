@@ -42,8 +42,6 @@ We altered
 a bit so it will only create the type of data we used in our paper:
 8 Khz sampling, Min mode and clean mixtures. 
 We also added `n_src` as an argument to the script.
-See this [GitHub generate_librimix.sh comparison](https://github.com/JorisCos/LibriMix/compare/master...ShakedDovrat:master#diff-63659ddd8e646af67a84cb673856273e14852c030e9e34aaf500da71e7a80f2f)
-to view the exact changes.
 
 --------------------------------------------
 
