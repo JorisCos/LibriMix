@@ -1,3 +1,23 @@
+### About this version of the dataset
+This version is is a modified version of the original LibriMix dataset. 
+It is used mainly to create LibriMix datasets with many speakers (more than 5), but can be used for any number of speakers.
+The original LibriMix dataset had issues making the data creation too slow or empirically stuck indefinitely for 10-15 speakers or more. 
+
+This version was used in our paper:
+
+``` 
+S. Dovrat, E. Nachmani, L. Wolf. Many-Speakers Single Channel Speech Separation with Optimal Permutation Training. Annual Conference of the International Speech Communication Association (INTERSPEECH), 2021.
+```
+
+To recreate the datasets used there, create your LibriMix datasets using this version.
+
+To see the changes between this version and the original one, visit https://github.com/JorisCos/LibriMix/compare/master...ShakedDovrat:master
+
+#### Instructions
+Run
+[`generate_librimix_metadata.sh`](./generate_librimix_metadata.sh) 
+and then use the same instructions from the original Librimix, stated bellow.
+
 ### About the dataset
 LibriMix is an open source dataset for source separation in noisy 
 environments. It is derived from LibriSpeech signals (clean subset) 
@@ -11,7 +31,7 @@ To generate LibriMix, clone the repo and run the main script :
 ```
 git clone https://github.com/JorisCos/LibriMix
 cd LibriMix 
-./generate_librimix.sh storage_dir
+./generate_librimix.sh n_src storage_dir
 ```
 
 Make sure that SoX is installed on your machine.

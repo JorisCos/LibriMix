@@ -160,7 +160,9 @@ def process_utterance(n_src, librispeech_dir, wham_dir, freq, mode, subdirs, dir
                                               wham_dir)
 
     orig_mix_id = mix_id
-    if n_src >= 10:  # SD: encode mix_id because it might be too long for a file name (max 255 chars in Linux)
+    # @ShakedDovrat note: Encode mix_id because it might be too long for a file name (max 255 chars on Linux).
+    # The original mix_id, which is a concatenation of the utterances used in the mixture, is kept in the metadata file under "original_mixture_ID".
+    if n_src >= 10:
         hash_object = hashlib.md5(mix_id.encode())
         mix_id = hash_object.hexdigest()
 
