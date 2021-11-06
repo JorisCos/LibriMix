@@ -54,8 +54,9 @@ def apply_fx(sound_path, speed):
     # Get the effect
     fx = (AudioEffectsChain().speed(speed))
     s, rate = sf.read(sound_path)
-    # Get 1st channel
-    s = s[:, 0]
+    if len(s.shape) > 1:
+        # Get 1st channel
+        s = s[:, 0]
     # Apply effect
     s = fx(s)
     # Write the file
