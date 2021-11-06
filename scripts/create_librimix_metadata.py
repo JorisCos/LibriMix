@@ -79,7 +79,7 @@ def create_librimix_metadata(librispeech_dir, librispeech_md_dir, wham_dir,
     # Example : to_be_ignored = ['dev-other.csv']
     to_be_ignored = []
     # @ShakedDovrat note: In our paper we didn't use train-100. Use this line to save running time:
-    # to_be_ignored = ['train-clean-100.csv']
+    to_be_ignored = ['train-clean-100.csv']
 
     check_already_generated(md_dir, dataset, to_be_ignored,
                             librispeech_md_files)

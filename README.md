@@ -1,22 +1,47 @@
+### LibriMix version for "Many-Speakers Single Channel Speech Separation with Optimal Permutation Training"
+This is a version of the LibriMix dataset repository that was used in the paper:
+
+[Many-Speakers Single Channel Speech Separation with Optimal Permutation Training](https://arxiv.org/abs/2104.08955)
+
+This is not an implementation of the method in the paper.
+
 ### About this version of the dataset
-This version is is a modified version of the original LibriMix dataset. 
+This version is a modified version of the original LibriMix dataset. 
 It is used mainly to create LibriMix datasets with many speakers (more than 5), but can be used for any number of speakers.
 The original LibriMix dataset had issues making the data creation too slow or empirically stuck indefinitely for 10-15 speakers or more. 
 
 This version was used in our paper:
 
-``` 
+```
 S. Dovrat, E. Nachmani, L. Wolf. Many-Speakers Single Channel Speech Separation with Optimal Permutation Training. Annual Conference of the International Speech Communication Association (INTERSPEECH), 2021.
 ```
 
 To recreate the datasets used there, create your LibriMix datasets using this version.
 
-To see the changes between this version and the original one, visit https://github.com/JorisCos/LibriMix/compare/master...ShakedDovrat:master
+Visit this 
+[GitHub comparison between the two versions](https://github.com/JorisCos/LibriMix/compare/master...ShakedDovrat:master)
+to see the exact changes we made in this version.
 
 #### Instructions
+To create datasets with 2 or 3 speakers, skip this stage.
+
+To create datasets with more than 3 speakers, you need to create the metadata first.
+
 Run
 [`generate_librimix_metadata.sh`](./generate_librimix_metadata.sh) 
-and then use the same instructions from the original Librimix, stated bellow.
+and then use the same instructions from the original LibriMix, stated bellow.
+
+This script by the original LibriMix requires you to download Wham! noise dataset in addition to the LibriSpeech dataset, 
+even though it is not used in our paper (we only use clean mixtures, without noise).
+
+##### Altered generate_librimix.sh
+We altered 
+[`generate_librimix.sh`](./generate_librimix.sh)
+a bit so it will only create the type of data we used in our paper:
+8 Khz sampling, Min mode and clean mixtures. 
+We also added `n_src` as an argument to the script.
+See this [GitHub generate_librimix.sh comparison](https://github.com/JorisCos/LibriMix/compare/master...ShakedDovrat:master#diff-63659ddd8e646af67a84cb673856273e14852c030e9e34aaf500da71e7a80f2f)
+to view the exact changes.
 
 ### About the dataset
 LibriMix is an open source dataset for source separation in noisy 
