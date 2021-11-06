@@ -1,5 +1,7 @@
-### LibriMix version for "Many-Speakers Single Channel Speech Separation with Optimal Permutation Training"
-This is a version of the LibriMix dataset repository that was used in the paper:
+### LibriMix version for many speakers
+This is a version of the LibriMix dataset repository that is meant to be used when needing mixtures of many speakers.
+
+This version of the dataset was used in the paper:
 
 [Many-Speakers Single Channel Speech Separation with Optimal Permutation Training](https://arxiv.org/abs/2104.08955)
 
@@ -8,7 +10,7 @@ This is not an implementation of the method in the paper.
 ### About this version of the dataset
 This version is a modified version of the original LibriMix dataset. 
 It is used mainly to create LibriMix datasets with many speakers (more than 5), but can be used for any number of speakers.
-The original LibriMix dataset had issues making the data creation too slow or empirically stuck indefinitely for 10-15 speakers or more. 
+**The original LibriMix dataset had issues making the data creation too slow or empirically stuck indefinitely for 10-15 speakers or more.** 
 
 This version was used in our paper:
 
