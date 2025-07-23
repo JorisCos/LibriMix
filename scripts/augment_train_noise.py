@@ -1,9 +1,10 @@
-import os
 import argparse
-import soundfile as sf
-import glob
-import tqdm.contrib.concurrent
 import functools
+import glob
+import os
+
+import soundfile as sf
+import tqdm.contrib.concurrent
 from pysndfx import AudioEffectsChain
 
 # Command line arguments

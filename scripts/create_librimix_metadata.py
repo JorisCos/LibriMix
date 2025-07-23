@@ -67,7 +67,7 @@ def main(args):
     md_dir = args.metadata_outdir
     if md_dir is None:
         root = os.path.dirname(librispeech_dir)
-        md_dir = os.path.join(root, f"LibriMix/metadata")
+        md_dir = os.path.join(root, "LibriMix/metadata")
     os.makedirs(md_dir, exist_ok=True)
     create_librimix_metadata(
         librispeech_dir, librispeech_md_dir, wham_dir, wham_md_dir, md_dir, n_src
@@ -258,7 +258,7 @@ def set_utt_pairs(librispeech_md_file, pair_list, n_src):
 def set_noise_pairs(pairs, noise_pairs, librispeech_md_file, wham_md_file):
     print("Generating pairs")
     # Initially take not augmented data
-    md = wham_md_file[wham_md_file["augmented"] == False]
+    md = wham_md_file[not wham_md_file["augmented"]]
     # If there are more mixtures than noises then use augmented data
     if len(pairs) > len(md):
         md = wham_md_file
