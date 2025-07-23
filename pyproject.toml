@@ -4,7 +4,16 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "matplotlib>=3.10.3",
+    "numpy>=2.3.1",
+    "pandas>=2.3.1",
+    "pyloudnorm>=0.1.1",
+    "pysndfx>=0.3.6",
+    "scipy>=1.16.0",
+    "soundfile>=0.13.1",
+    "tqdm>=4.67.1",
+]
 
 [dependency-groups]
 dev = [
